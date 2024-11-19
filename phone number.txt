@@ -1,0 +1,159 @@
+using System.Security.Cryptography;
+
+namespace CRUD_phone_number
+{
+    internal class Program
+    {
+        public static List<string> Phonenumbers = new List<string>();
+        static void Main(string[] args)
+        {
+            DataSeed();
+            FrontEnd();
+        }
+
+        public static void FrontEnd()
+        {
+            while (true)
+            {
+                Console.WriteLine("1. Add number");
+                Console.WriteLine("2. Delete number");
+                Console.WriteLine("3. Update number");
+                Console.WriteLine("4. show all numbers");
+                Console.WriteLine("Choose :");
+                var option = int.Parse(Console.ReadLine());
+                if (option == 1)
+                {
+                    Console.WriteLine("enter a number");
+                    var number = int.Parse(Console.ReadLine());
+                    var Converted = Convert.ToString(number);
+                    var result = Addnumber(Converted);
+                    var isValidFormat = CheckFormat(Converted);
+                    if(result is false || isValidFormat is false)
+                    {
+                        Console.WriteLine("Invalid number or number already exist");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Number Added sucessfully");
+                    }
+                }
+                else if (option == 2)
+                {
+                    Console.WriteLine("Enter old number");
+                    var Oldnumber = Console.ReadLine();
+                    Console.WriteLine("enter index of old number");
+                    var index = int.Parse(Console.ReadLine());
+                    var result = Delete(Oldnumber, index);
+                    if (result is false)
+                    {
+                        Console.WriteLine("Error : You entered uncorrect old number or index");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Number deleted sucessfully");
+                    }
+                }
+                else if (option == 3)
+                {
+                    Console.WriteLine("Enter old number");
+                    var number = Console.ReadLine();
+                    Console.WriteLine("Write new number");
+                    var newnumber = Console.ReadLine();
+                    var result = Update(newnumber, number);
+                    if(result is true)
+                    {
+                        Console.WriteLine("Sucess updated");
+                    }
+                    else
+                    {
+                        Console.WriteLine("error unsucessful");
+                    }
+                }
+                else if (option == 4)
+                {
+                    Display();
+                }
+
+                Console.ReadKey();
+                Console.Clear();
+            }
+
+        }
+        // delete, add, update, show;
+        public static void DataSeed()
+        {
+            Phonenumbers.Add("+998 99 790-55-31");
+            Phonenumbers.Add("+998 97 667-84-09");
+            Phonenumbers.Add("+998 93 761-22-06");
+            Phonenumbers.Add("+998 90 999-80-06");
+            Phonenumbers.Add("+998 97 604-01-52");
+        }
+
+        public static bool Delete(string number, int index)
+        {
+            if (index < 0 || index >= Phonenumbers.Count || Phonenumbers[index] != number)
+            {
+                return false;
+            }
+            var oldnumber = Phonenumbers.Contains(number);
+            Phonenumbers.Remove(number);
+            return oldnumber;
+        }
+
+        public static bool Addnumber(string number)
+        {
+            var result = false;
+            var exists = Phonenumbers.Contains(number);
+            var isValid = CheckFormat(number);
+            if (isValid is true && exists is false)
+            {
+                Phonenumbers.Add(number);
+                result = true;
+            }
+             return result; 
+            
+        }
+        public static void Display()
+        {
+            foreach(var number in Phonenumbers)
+            {
+                Console.WriteLine(number);
+            }
+        }
+
+        public static bool Update(string Newnumber, string Oldnumber)
+        {    
+            var isValidFormat = CheckFormat(Newnumber);
+            var exists = Phonenumbers.Contains(Oldnumber);
+            var index = Phonenumbers.IndexOf(Oldnumber);
+            if (exists is false || isValidFormat is true )
+            {
+                return false;
+            }
+            Phonenumbers[index] = Newnumber;
+            return  true;
+        }
+
+        public static bool CheckFormat(string format)
+        {
+            var spaceAndScore = false;
+            var first3 = false;
+            var Length = false;
+         
+                if (format.Substring(0, 4) == "+998")
+                {
+                    first3 = true;
+                }
+            
+            bool isValidLength = format.Length == 17;
+            Length = true;
+
+            if (format.Length == 17 && 
+                format[4] == ' ' && format[7] == ' ' && format[11] == '-' && format[13] == '-')
+            {
+                spaceAndScore = true;
+            }
+
+             return spaceAndScore && isValidLength && first3;
+            
+        }
