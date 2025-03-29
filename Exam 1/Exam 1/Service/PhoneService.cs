@@ -1,4 +1,5 @@
 ﻿using Exam_1.Model;
+using System.Collections.Specialized;
 
 namespace Exam_1.Service
 {
@@ -39,6 +40,7 @@ namespace Exam_1.Service
             }
             phones.Remove(exist);
             return true;
+            cout << "Made github";
 
         }
 
